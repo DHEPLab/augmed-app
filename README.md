@@ -39,9 +39,7 @@ AugMed is a clinical case review platform for research on AI-augmented medical d
 Before you begin, ensure you have met the following requirements:
 
 - You have [Taskfile](https://taskfile.dev/docs/installation) installed
-- You have a working installation of [Node.js](https://nodejs.org/) (version 14 or later).
-- You have [npm](https://www.npmjs.com/) (Node Package Manager) installed, which comes with Node.js.
-- You have access to the DHEP Lab's API and the necessary credentials to connect to it.
+- You have docker desktop installed
 - You have a code editor installed (e.g., [Visual Studio Code](https://code.visualstudio.com/)).
 - You have a web browser installed (e.g., Chrome, Firefox).
 - You have a tablet or device for testing the app, if applicable.
