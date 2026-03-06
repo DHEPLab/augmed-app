@@ -1,0 +1,81 @@
+name: Create semantic tag on merge
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  tag-release:
+    # Only run when the PR was merged (not just closed) into main
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required to create and push a tag
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history and tags
+
+      # Resolve tag: user-specified (label or PR body) or auto-bump
+      - name: Resolve release tag
+        id: resolve_tag
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          # --- Option 1: PR label "release:v1.2.3" or "release:1.2.3" ---
+          LABELS='${{ toJSON(github.event.pull_request.labels.*.name) }}'
+          TAG_FROM_LABEL=$(echo "$LABELS" | jq -r '.[] | select(startswith("release:")) | sub("^release:"; "")' | head -n 1)
+          if [ -n "$TAG_FROM_LABEL" ] && [ "$TAG_FROM_LABEL" != "null" ]; then
+            # Ensure v prefix
+            [[ "$TAG_FROM_LABEL" != v* ]] && TAG_FROM_LABEL="v${TAG_FROM_LABEL}"
+            echo "tag_from=label" >> $GITHUB_OUTPUT
+            echo "new_tag=$TAG_FROM_LABEL" >> $GITHUB_OUTPUT
+            echo "Using tag from label: $TAG_FROM_LABEL"
+            exit 0
+          fi
+
+          # --- Option 2: PR body line "Release: v1.2.3" or "release: 1.2.3" ---
+          TAG_FROM_BODY=$(echo "$PR_BODY" | grep -iE '^\s*release:\s*v?[0-9]+\.[0-9]+\.[0-9]+' | head -n 1 | sed -E 's/^[^:]*:\s*//i' | tr -d ' \r')
+          if [ -n "$TAG_FROM_BODY" ]; then
+            [[ "$TAG_FROM_BODY" != v* ]] && TAG_FROM_BODY="v${TAG_FROM_BODY}"
+            echo "tag_from=body" >> $GITHUB_OUTPUT
+            echo "new_tag=$TAG_FROM_BODY" >> $GITHUB_OUTPUT
+            echo "Using tag from PR body: $TAG_FROM_BODY"
+            exit 0
+          fi
+
+          # --- Fallback: auto-bump patch from latest tag ---
+          LATEST_TAG=$(git tag -l 'v*.*.*' --sort=-v:refname | head -n 1)
+          [ -z "$LATEST_TAG" ] && LATEST_TAG="v0.0.0"
+          VERSION="${LATEST_TAG#v}"
+          MAJOR="${VERSION%%.*}"; REST="${VERSION#*.}"
+          MINOR="${REST%%.*}"; PATCH="${REST#*.}"
+          PATCH=$((PATCH + 1))
+          NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+          echo "tag_from=auto" >> $GITHUB_OUTPUT
+          echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+          echo "No user tag found; auto-bumped to: $NEW_TAG"
+
+      - name: Validate tag format
+        run: |
+          TAG="${{ steps.resolve_tag.outputs.new_tag }}"
+          if ! echo "$TAG" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Invalid semantic tag: $TAG (expected e.g. v1.2.3)"
+            exit 1
+          fi
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "::error::Tag $TAG already exists"
+            exit 1
+          fi
+          echo "Tag $TAG is valid and does not exist"
+
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          TAG="${{ steps.resolve_tag.outputs.new_tag }}"
+          git tag -a "$TAG" -m "Release $TAG (PR #${{ github.event.pull_request.number }})"
+          git push origin "$TAG"

@@ -5,6 +5,12 @@ exports[`AppLayout match snapshot test 1`] = `
   className="layout m mainLayout"
   data-testid="aim-ahead-layout"
   id="aim-ahead-layout"
+  style={
+    Object {
+      "backgroundColor": "#fff",
+      "color": "rgba(0, 0, 0, 0.87)",
+    }
+  }
 >
   <div
     className="header"

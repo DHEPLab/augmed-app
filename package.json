@@ -51,7 +51,7 @@
     "babel-preset-react-app": "^10.0.1",
     "classnames": "^2.5.1",
     "jotai": "^2.8.0",
-    "node-sass": "^9.0.0",
+
     "notistack": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

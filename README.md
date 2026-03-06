@@ -1,8 +1,10 @@
 # The AugMed App (Frontend)
 
-AugMed is a web application, built for the UNC-Chapel Hill DHEP Lab, that allows the lab to collect data from participants in a user-friendly way. The app is designed to be used on any devices, and it allows participants to answer questions about their judgements for cases with potential Colorectal Cancer (CRC). The app is built using React, and the backend API is built using Flask and Python.
+AugMed is a clinical case review platform for research on AI-augmented medical decision-making. The frontend presents clinicians with de-identified patient cases and collects their diagnostic assessments and clinical recommendations. Researchers control exactly which clinical features each participant sees, enabling controlled experiments on how AI assistance and information disclosure influence clinical judgment. The platform is domain-agnostic — any clinical scenario representable in OMOP format can be studied. The app is built using React, and the backend API is built using Flask and Python.
 
 **Live Website**: **[https://augmed1.dhep.org/](https://augmed1.dhep.org/).**
+
+> **Deploy the full platform:** This frontend is part of a multi-service platform. To deploy everything together (API + Frontend + RL + Database), see the [One-Click Deploy Guide](https://github.com/DHEPLab/augmed-api-v2/blob/main/docs/getting-started/one-click-deploy.md) in the API repository.
 
 ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
@@ -36,9 +38,8 @@ AugMed is a web application, built for the UNC-Chapel Hill DHEP Lab, that allows
 
 Before you begin, ensure you have met the following requirements:
 
-- You have a working installation of [Node.js](https://nodejs.org/) (version 14 or later).
-- You have [npm](https://www.npmjs.com/) (Node Package Manager) installed, which comes with Node.js.
-- You have access to the DHEP Lab's API and the necessary credentials to connect to it.
+- You have [Taskfile](https://taskfile.dev/docs/installation) installed
+- You have docker desktop installed
 - You have a code editor installed (e.g., [Visual Studio Code](https://code.visualstudio.com/)).
 - You have a web browser installed (e.g., Chrome, Firefox).
 - You have a tablet or device for testing the app, if applicable.

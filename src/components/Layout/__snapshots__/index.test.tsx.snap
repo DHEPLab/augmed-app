@@ -5,6 +5,12 @@ exports[`Test Layout on variable media point view port: should on PC view port 1
   className="layout m"
   data-testid="aim-ahead-layout"
   id="aim-ahead-layout"
+  style={
+    Object {
+      "backgroundColor": "#fff",
+      "color": "rgba(0, 0, 0, 0.87)",
+    }
+  }
 />
 `;
 
@@ -13,5 +19,11 @@ exports[`Test Layout on variable media point view port: should on mobile view po
   className="layout"
   data-testid="aim-ahead-layout"
   id="aim-ahead-layout"
+  style={
+    Object {
+      "backgroundColor": "#fff",
+      "color": "rgba(0, 0, 0, 0.87)",
+    }
+  }
 />
 `;

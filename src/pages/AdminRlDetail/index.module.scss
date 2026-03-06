@@ -1,0 +1,10 @@
+.container {
+  padding: 24px 5%;
+  min-height: 100vh;
+}
+
+:global(body.dark-mode) {
+  .container {
+    color: #e0e0e0;
+  }
+}
